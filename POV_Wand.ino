@@ -624,6 +624,9 @@ const int minecraft_16ptDescriptors[][2] =
   {17, 850},    // Z 
 };
 
+//Functions for operating the LED string
+//==============================================================================
+
 ////////////////////////////////////////////////////////////////////////////////
 /*
  This is an example of how simple driving a Neopixel can be
@@ -719,7 +722,8 @@ void show() {
   _delay_us( (RES / 1000UL) + 1);       // Round up since the delay must be _at_least_ this long (too short might not work, too long not a problem)
 }
 
-////////////////////////////////////////////////////////////////////////////////
+//Functions for translating text into bitmap and then updating the LED display
+//==============================================================================
 
 int translate(char c) {
   if (c != ' ') {
@@ -764,8 +768,8 @@ void parse(String message, unsigned char r, unsigned char g, unsigned char b, in
      dis_letter(r,g,b,framerate,message[k]);
   }
 }
-
-//////////////////////////////////////////////////////////////////////////
+//Functions for button control
+//==============================================================================
 
 // Button variables
 int buttonVal = 0; // value read from button
@@ -773,11 +777,6 @@ int buttonLast = 0; // buffered value of the button's previous state
 long btnDnTime; // time the button was pressed down
 long btnUpTime; // time the button was released
 boolean ignoreUp = false; // whether to ignore the button release because the click+hold was triggered
-
-
-//=================================================
-//================================================
-
 
 //=================================================
 // Events to trigger by click and press+hold
@@ -788,10 +787,8 @@ int framerate = 1/30;
 unsigned char r;
 unsigned char g;
 unsigned char b;
-int led_on;
 
 void shutoff() {
-  led_on = 0;
   asm volatile(
     "ldi r16,(1<<%[ASM_INT0]) \n\t"
     "out %[ASM_GIMSK], r16 \n\t"
@@ -821,10 +818,8 @@ void shutoff() {
     [ASM_SM0] "I" (i_SM0),
     [ASM_SM1] "I" (i_SM1)
     );
-  led_on = 1;
 }
 ISR(INT0_vect) {
-  buttonVal = HIGH;
 }
 
 void check_long_press(int buttonVal) {
@@ -854,7 +849,6 @@ void check_short_press(int buttonVal, int buttonLast) {
 }
 
 void button_press(){
-  if (led_on) {
   buttonVal = digitalRead(buttonPin);
 
   cli();
@@ -862,7 +856,6 @@ void button_press(){
   check_long_press(buttonVal);
   sei();
   buttonLast = buttonVal;
-  }
 }
 
 void event1()
@@ -881,12 +874,14 @@ void event2()
 }
 
 
+//Main setup
+//==============================================================================
+
 void setup() {
   message_to_dis = "fame";
   r = 0;
   g = 50;
   b = 0;
-  led_on = 1;
 
   ledsetup();
   pinMode(buttonPin, INPUT);
