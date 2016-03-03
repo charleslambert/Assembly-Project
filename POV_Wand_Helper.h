@@ -57,3 +57,26 @@
 #define NS_TO_CYCLES(n) ( (n) / NS_PER_CYCLE )
 
 ////////////////////////////////////////////////////////////////////////////////
+
+//code written by ??? and then modified
+////////////////////////////////////////////////////////////////////////////////
+#define buttonPin 2 // analog input pin to use as a digital input
+
+#define debounce 20 // ms debounce period to prevent flickering when pressing or releasing the button
+#define holdTime 2000 // ms hold period: how long to wait for press+hold event
+
+//const static unsigned char letters[];
+void sendBit( bool bitVal );
+void sendByte( unsigned char byte );
+void ledsetup();
+void sendPixel( unsigned char r, unsigned char g , unsigned char b );
+void show();
+int translate(char c);
+void update_display(unsigned char r, unsigned char g, unsigned char b, uint16_t slice);
+void parse(String message, unsigned char r, unsigned char g, unsigned char b, int framerate);
+void shutoff();
+void check_long_press(int buttonVal);
+void check_short_press(int buttonVal, int buttonLast);
+void button_press();
+void short_press();
+void long_press();

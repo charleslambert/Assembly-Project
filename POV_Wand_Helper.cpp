@@ -145,15 +145,15 @@ void shutoff() {
     "out %[ASM_MCUCR], r16 \n\t"                                                                      ///////////////////////////////////////////////////////////////
     "ldi r16, (0<<%[ASM_ADEN]) \n\t" // turn off ADC
     "out %[ASM_ADCSRA], r16 \n\t"    ///////////////
-    "sei\n\t"
-    "sleep\n\t"
-    "cli\n\t"
-    "ldi r16,(0<<%[ASM_INT0]) \n\t"
-    "out %[ASM_GIMSK], r16 \n\t"
-    "ldi r16,(0<<%[ASM_SE]) \n\t"
-    "out %[ASM_MCUCR], r16 \n\t"
-    "ldi r16, (1<<%[ASM_ADEN]) \n\t"
-    "out %[ASM_ADCSRA], r16 \n\t"
+    "sei\n\t" //turn on global interupts
+    "sleep\n\t" // sleep
+    "cli\n\t" // turn off global interupts
+    "ldi r16,(0<<%[ASM_INT0]) \n\t" //turn off external interupts
+    "out %[ASM_GIMSK], r16 \n\t"    /////////////////////////////
+    "ldi r16,(0<<%[ASM_SE]) \n\t" //turn off sleep functionality
+    "out %[ASM_MCUCR], r16 \n\t"  //////////////////////////////
+    "ldi r16, (1<<%[ASM_ADEN]) \n\t" //turn on ADC
+    "out %[ASM_ADCSRA], r16 \n\t"    /////////////
     "sei\n\t"
     ::
     [ASM_SE] "I" (i_SE),
@@ -168,5 +168,59 @@ void shutoff() {
     [ASM_SM1] "I" (i_SM1)
     );
 }
-ISR(INT0_vect) {
+
+
+//Functions to control button presses
+//====================================================================================================================================================
+void check_long_press(int buttonVal) {
+    // Test for button held down for longer than the hold time
+  if (buttonVal == LOW && (millis() - btnDnTime) > long(holdTime))
+  {
+    long_press();
+    ignoreUp = true;
+    btnDnTime = millis();
+  }
+}
+
+void check_short_press(int buttonVal, int buttonLast) {
+  // Test for button pressed and store the down time
+  if (buttonVal == LOW && buttonLast == HIGH && (millis() - btnUpTime) > long(debounce))
+  {
+    btnDnTime = millis();
+  }
+  
+  // Test for button release and store the up time
+  if (buttonVal == HIGH && buttonLast == LOW && (millis() - btnDnTime) > long(debounce))
+  {
+    if (ignoreUp == false) short_press();
+    else ignoreUp = false;
+    btnUpTime = millis();
+  }
+}
+
+void button_press(){
+  if (led_on) {
+  buttonVal = digitalRead(buttonPin);
+
+  cli();
+  check_short_press(buttonVal,buttonLast);
+  check_long_press(buttonVal);
+  sei();
+  buttonLast = buttonVal;
+  }
+}
+
+void short_press()
+{
+  message_to_dis = "hello";
+  r = 0;
+  g = 0;
+  b = 50;
+}
+
+void long_press()
+{
+  update_display(r,g,b,0x00);
+  delay(1000);
+  shutoff();
 }
