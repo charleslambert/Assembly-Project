@@ -10,15 +10,15 @@
 #define i_SM1 SM1
 #define i_ISC00 ISC00
 #define i_ISC01 ISC01
-//All code between the sets of // were written by BigJosh and are attributed to him.
 
 ////////////////////////////////////////////////////////////////////////////////
-/*
- This is an example of how simple driving a Neopixel can be
- This code is optimized for understandability and changability rather than raw speed
- More info at http://wp.josh.com/2014/05/11/ws2812-neopixels-made-easy/
-*/
+#define buttonPin 2 // analog input pin to use as a digital input
 
+#define debounce 20 // ms debounce period to prevent flickering when pressing or releasing the button
+#define holdTime 2000 // ms hold period: how long to wait for press+hold event
+////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////
 // Change this to be at least as long as your pixel string (too long will work fine, just be a little slower)
 
 #include <util/delay.h>
@@ -59,96 +59,9 @@
 
 // Actually send a bit to the string. We must to drop to asm to enusre that the complier does
 // not reorder things and make it so the delay happens in the wrong place.
-
-void sendBit( bool bitVal ) {
-  
-    if (  bitVal ) {        // 0 bit
-      
-    asm volatile (
-      "sbi %[port], %[bit] \n\t"        // Set the output bit
-      ".rept %[onCycles] \n\t"                                // Execute NOPs to delay exactly the specified number of cycles
-      "nop \n\t"
-      ".endr \n\t"
-      "cbi %[port], %[bit] \n\t"                              // Clear the output bit
-      ".rept %[offCycles] \n\t"                               // Execute NOPs to delay exactly the specified number of cycles
-      "nop \n\t"
-      ".endr \n\t"
-      ::
-      [port]    "I" (_SFR_IO_ADDR(PIXEL_PORT)),
-      [bit]   "I" (PIXEL_BIT),
-      [onCycles]  "I" (NS_TO_CYCLES(T1H) - 2),    // 1-bit width less overhead  for the actual bit setting, note that this delay could be longer and everything would still work
-      [offCycles]   "I" (NS_TO_CYCLES(T1L) - 2)     // Minimum interbit delay. Note that we probably don't need this at all since the loop overhead will be enough, but here for correctness
-
-    );
-                                  
-    } else {          // 1 bit
-
-    // **************************************************************************
-    // This line is really the only tight goldilocks timing in the whole program!
-    // **************************************************************************
-
-
-    asm volatile (
-      "sbi %[port], %[bit] \n\t"        // Set the output bit
-      ".rept %[onCycles] \n\t"        // Now timing actually matters. The 0-bit must be long enough to be detected but not too long or it will be a 1-bit
-      "nop \n\t"                                              // Execute NOPs to delay exactly the specified number of cycles
-      ".endr \n\t"
-      "cbi %[port], %[bit] \n\t"                              // Clear the output bit
-      ".rept %[offCycles] \n\t"                               // Execute NOPs to delay exactly the specified number of cycles
-      "nop \n\t"
-      ".endr \n\t"
-      ::
-      [port]    "I" (_SFR_IO_ADDR(PIXEL_PORT)),
-      [bit]   "I" (PIXEL_BIT),
-      [onCycles]  "I" (NS_TO_CYCLES(T0H) - 2),
-      [offCycles] "I" (NS_TO_CYCLES(T0L) - 2)
-
-    );
-      
-    }
-    
-    // Note that the inter-bit gap can be as long as you want as long as it doesn't exceed the 5us reset timeout (which is A long time)
-    // Here I have been generous and not tried to squeeze the gap tight but instead erred on the side of lots of extra time.
-    // This has thenice side effect of avoid glitches on very long strings becuase 
-
-    
-}  
-
-  
-void sendByte( unsigned char byte ) {
-    
-    for( unsigned char bit = 0 ; bit < 8 ; bit++ ) {
-      
-      sendBit( bitRead( byte , 7 ) );                // Neopixel wants bit in highest-to-lowest order
-                                                     // so send highest bit (bit #7 in an 8-bit byte since they start at 0)
-      byte <<= 1;                                    // and then shift left so bit 6 moves into 7, 5 moves into 6, etc
-      
-    }           
-} 
-// Set the specified pin up as digital out
-
-void ledsetup() {
-  
-  bitSet( PIXEL_DDR , PIXEL_BIT );
-  
-}
-
-void sendPixel( unsigned char r, unsigned char g , unsigned char b )  {  
-  
-  sendByte(g);          // Neopixel wants colors in green then red then blue order
-  sendByte(r);
-  sendByte(b);
-  
-}
-
-
-// Just wait long enough without sending any bots to cause the pixels to latch and display the last sent frame
-
-void show() {
-  _delay_us( (RES / 1000UL) + 1);       // Round up since the delay must be _at_least_ this long (too short might not work, too long not a problem)
-}
-
 ////////////////////////////////////////////////////////////////////////////////
+
+
 
 
 // 
@@ -711,11 +624,102 @@ const int minecraft_16ptDescriptors[][2] =
   {17, 850},    // Z 
 };
 
-int test[] = 
-{
-  0x00,0xFF,0x00,0xFF,
-  0xFF,0x00,0xFF,0xFF
-};
+////////////////////////////////////////////////////////////////////////////////
+/*
+ This is an example of how simple driving a Neopixel can be
+ This code is optimized for understandability and changability rather than raw speed
+ More info at http://wp.josh.com/2014/05/11/ws2812-neopixels-made-easy/
+*/
+
+void sendBit( bool bitVal ) {
+  
+    if (  bitVal ) {        // 0 bit
+      
+    asm volatile (
+      "sbi %[port], %[bit] \n\t"        // Set the output bit
+      ".rept %[onCycles] \n\t"                                // Execute NOPs to delay exactly the specified number of cycles
+      "nop \n\t"
+      ".endr \n\t"
+      "cbi %[port], %[bit] \n\t"                              // Clear the output bit
+      ".rept %[offCycles] \n\t"                               // Execute NOPs to delay exactly the specified number of cycles
+      "nop \n\t"
+      ".endr \n\t"
+      ::
+      [port]    "I" (_SFR_IO_ADDR(PIXEL_PORT)),
+      [bit]   "I" (PIXEL_BIT),
+      [onCycles]  "I" (NS_TO_CYCLES(T1H) - 2),    // 1-bit width less overhead  for the actual bit setting, note that this delay could be longer and everything would still work
+      [offCycles]   "I" (NS_TO_CYCLES(T1L) - 2)     // Minimum interbit delay. Note that we probably don't need this at all since the loop overhead will be enough, but here for correctness
+
+    );
+                                  
+    } else {          // 1 bit
+
+    // **************************************************************************
+    // This line is really the only tight goldilocks timing in the whole program!
+    // **************************************************************************
+
+
+    asm volatile (
+      "sbi %[port], %[bit] \n\t"        // Set the output bit
+      ".rept %[onCycles] \n\t"        // Now timing actually matters. The 0-bit must be long enough to be detected but not too long or it will be a 1-bit
+      "nop \n\t"                                              // Execute NOPs to delay exactly the specified number of cycles
+      ".endr \n\t"
+      "cbi %[port], %[bit] \n\t"                              // Clear the output bit
+      ".rept %[offCycles] \n\t"                               // Execute NOPs to delay exactly the specified number of cycles
+      "nop \n\t"
+      ".endr \n\t"
+      ::
+      [port]    "I" (_SFR_IO_ADDR(PIXEL_PORT)),
+      [bit]   "I" (PIXEL_BIT),
+      [onCycles]  "I" (NS_TO_CYCLES(T0H) - 2),
+      [offCycles] "I" (NS_TO_CYCLES(T0L) - 2)
+
+    );
+      
+    }
+    
+    // Note that the inter-bit gap can be as long as you want as long as it doesn't exceed the 5us reset timeout (which is A long time)
+    // Here I have been generous and not tried to squeeze the gap tight but instead erred on the side of lots of extra time.
+    // This has thenice side effect of avoid glitches on very long strings becuase 
+
+    
+}  
+
+  
+void sendByte( unsigned char byte ) {
+    
+    for( unsigned char bit = 0 ; bit < 8 ; bit++ ) {
+      
+      sendBit( bitRead( byte , 7 ) );                // Neopixel wants bit in highest-to-lowest order
+                                                     // so send highest bit (bit #7 in an 8-bit byte since they start at 0)
+      byte <<= 1;                                    // and then shift left so bit 6 moves into 7, 5 moves into 6, etc
+      
+    }           
+} 
+// Set the specified pin up as digital out
+
+void ledsetup() {
+  
+  bitSet( PIXEL_DDR , PIXEL_BIT );
+  
+}
+
+void sendPixel( unsigned char r, unsigned char g , unsigned char b )  {  
+  
+  sendByte(g);          // Neopixel wants colors in green then red then blue order
+  sendByte(r);
+  sendByte(b);
+  
+}
+
+
+// Just wait long enough without sending any bots to cause the pixels to latch and display the last sent frame
+
+void show() {
+  _delay_us( (RES / 1000UL) + 1);       // Round up since the delay must be _at_least_ this long (too short might not work, too long not a problem)
+}
+
+////////////////////////////////////////////////////////////////////////////////
 
 int translate(char c) {
   if (c != ' ') {
@@ -762,11 +766,6 @@ void parse(String message, unsigned char r, unsigned char g, unsigned char b, in
 }
 
 //////////////////////////////////////////////////////////////////////////
-
-#define buttonPin 2 // analog input pin to use as a digital input
-
-#define debounce 20 // ms debounce period to prevent flickering when pressing or releasing the button
-#define holdTime 2000 // ms hold period: how long to wait for press+hold event
 
 // Button variables
 int buttonVal = 0; // value read from button
