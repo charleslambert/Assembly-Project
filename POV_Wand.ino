@@ -1,29 +1,29 @@
 #include "POV_Wand.h"
 
-typedef struct message {
+struct MES {
   String message;
   unsigned char r;
   unsigned char g;
   unsigned char b;
-}MES;
+};
 
-struct message mes1 = {
-  .message = "HELLO",
-  .r       = 50,
-  .g       = 0,
-  .b       = 0
+MES mes1 = {
+  "HELLO",
+  50,
+  0,
+  0
 };
-struct message mes2 = {
-  .message = "CRUEL",
-  .r       = 0,
-  .g       = 50,
-  .b       = 0
+MES mes2 = {
+  "CRUEL",
+  0,
+  50,
+  0
 };
-struct message mes3 = {
-  .message = "WORLD",
-  .r       = 0,
-  .g       = 0,
-  .b       = 50
+MES mes3 = {
+  "WORLD",
+  0,
+  0,
+  50
 };
 
 MES messages[] = {mes1,mes2,mes3};
@@ -685,6 +685,8 @@ void show() {
 //Functions for translating text into bitmap and then updating the LED display
 //==============================================================================
 
+MES mes_to_dis;
+
 int translate(char c) {
   if (c != ' ') {
     return c - 'A';
@@ -722,10 +724,11 @@ void dis_letter ( unsigned char r, unsigned char g, unsigned char b,int frequenc
   } 
 }
 
-void parse(String message, unsigned char r, unsigned char g, unsigned char b, int framerate) {
-  int mes_len = message.length();
+void parse(MES message, int framerate) {
+  int mes_len = message.message.length();
+  
   for (int k=0; k<mes_len; k++){
-     dis_letter(r,g,b,framerate,message[k]);
+     dis_letter(message.r,message.g,message.b,framerate,message.message[k]);
   }
 }
 //Functions for button control
@@ -740,13 +743,6 @@ boolean ignoreUp = false; // whether to ignore the button release because the cl
 
 //=================================================
 // Events to trigger by click and press+hold
-
-String message_to_dis;
-
-int framerate = 1/30;
-unsigned char r;
-unsigned char g;
-unsigned char b;
 
 void shutoff() {
   asm volatile(
@@ -819,17 +815,16 @@ void button_press(){
   buttonLast = buttonVal;
 }
 
+int count = 0;
 void event1()
 {
-message_to_dis = "hello";
-r = 0;
-g = 0;
-b = 50;
+  count = ((count+1)%3);
+  mes_to_dis = messages[count];
 }
 
 void event2()
 {
-  update_display(r,g,b,0x00);
+  update_display(0,0,0,0x00);
   delay(1000);
   shutoff();
 }
@@ -839,10 +834,7 @@ void event2()
 //==============================================================================
 
 void setup() {
-  message_to_dis = "fame";
-  r = 0;
-  g = 50;
-  b = 0;
+  mes_to_dis = messages[0];
 
   ledsetup();
   pinMode(buttonPin, INPUT);
@@ -853,7 +845,7 @@ void loop() {
 
   button_press();
 
-  parse(message_to_dis,r,g,b,framerate);
+  parse(mes_to_dis,FRAMERATE);
   
 }
 
