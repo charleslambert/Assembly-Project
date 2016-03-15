@@ -593,61 +593,41 @@ const int minecraft_16ptDescriptors[][2] =
  This code is optimized for understandability and changability rather than raw speed
  More info at http://wp.josh.com/2014/05/11/ws2812-neopixels-made-easy/
 */
-
-void sendBit( bool bitVal ) {
-  
-    if (  bitVal ) {        // 0 bit
+void sendBit( bool bitVal ) {     
       
     asm volatile (
+      "cpi %[bitVal_asm],1 \n\t"
+      "breq if \n\t"
       "sbi %[port], %[bit] \n\t"        // Set the output bit
-      ".rept %[onCycles] \n\t"                                // Execute NOPs to delay exactly the specified number of cycles
-      "nop \n\t"
-      ".endr \n\t"
-      "cbi %[port], %[bit] \n\t"                              // Clear the output bit
-      ".rept %[offCycles] \n\t"                               // Execute NOPs to delay exactly the specified number of cycles
-      "nop \n\t"
-      ".endr \n\t"
-      ::
-      [port]    "I" (_SFR_IO_ADDR(PIXEL_PORT)),
-      [bit]   "I" (PIXEL_BIT),
-      [onCycles]  "I" (NS_TO_CYCLES(T1H) - 2),    // 1-bit width less overhead  for the actual bit setting, note that this delay could be longer and everything would still work
-      [offCycles]   "I" (NS_TO_CYCLES(T1L) - 2)     // Minimum interbit delay. Note that we probably don't need this at all since the loop overhead will be enough, but here for correctness
-
-    );
-                                  
-    } else {          // 1 bit
-
-    // **************************************************************************
-    // This line is really the only tight goldilocks timing in the whole program!
-    // **************************************************************************
-
-
-    asm volatile (
-      "sbi %[port], %[bit] \n\t"        // Set the output bit
-      ".rept %[onCycles] \n\t"        // Now timing actually matters. The 0-bit must be long enough to be detected but not too long or it will be a 1-bit
+      ".rept %[onCycles0] \n\t"        // Now timing actually matters. The 0-bit must be long enough to be detected but not too long or it will be a 1-bit
       "nop \n\t"                                              // Execute NOPs to delay exactly the specified number of cycles
       ".endr \n\t"
       "cbi %[port], %[bit] \n\t"                              // Clear the output bit
-      ".rept %[offCycles] \n\t"                               // Execute NOPs to delay exactly the specified number of cycles
+      ".rept %[offCycles0] \n\t"                               // Execute NOPs to delay exactly the specified number of cycles
       "nop \n\t"
       ".endr \n\t"
+      "rjmp else \n\t"
+
+      "if: \n\t"
+      "sbi %[port], %[bit] \n\t"        // Set the output bit
+      ".rept %[onCycles1] \n\t"                                // Execute NOPs to delay exactly the specified number of cycles
+      "nop \n\t"
+      ".endr \n\t"
+      "cbi %[port], %[bit] \n\t"                              // Clear the output bit
+      ".rept %[offCycles1] \n\t"                               // Execute NOPs to delay exactly the specified number of cycles
+      "nop \n\t"
+      ".endr \n\t"
+      "else: \n\t"
       ::
       [port]    "I" (_SFR_IO_ADDR(PIXEL_PORT)),
       [bit]   "I" (PIXEL_BIT),
-      [onCycles]  "I" (NS_TO_CYCLES(T0H) - 2),
-      [offCycles] "I" (NS_TO_CYCLES(T0L) - 2)
-
-    );
-      
-    }
-    
-    // Note that the inter-bit gap can be as long as you want as long as it doesn't exceed the 5us reset timeout (which is A long time)
-    // Here I have been generous and not tried to squeeze the gap tight but instead erred on the side of lots of extra time.
-    // This has thenice side effect of avoid glitches on very long strings becuase 
-
-    
-}  
-
+      [onCycles0]  "I" (NS_TO_CYCLES(T0H) - 2),
+      [offCycles0] "I" (NS_TO_CYCLES(T0L) - 2),
+      [onCycles1]  "I" (NS_TO_CYCLES(T1H) - 2),    // 1-bit width less overhead  for the actual bit setting, note that this delay could be longer and everything would still work
+      [offCycles1]   "I" (NS_TO_CYCLES(T1L) - 2),
+      [bitVal_asm] "a" (bitVal)
+      );
+}
   
 void sendByte( unsigned char byte ) {
     
