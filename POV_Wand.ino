@@ -1,5 +1,6 @@
 #include "POV_Wand.h"
 
+//
 struct MES {
   String message;
   unsigned char r;
@@ -7,20 +8,24 @@ struct MES {
   unsigned char b;
 };
 
+// Input messages
+//==============================================================================
+
+//To insure spacing add spaces at the beginning and end of messages
 MES mes1 = {
-  "HELLO",
+  " HELLO ",
   50,
   0,
   0
 };
 MES mes2 = {
-  "CRUEL",
+  " CRUEL ",
   0,
   50,
   0
 };
 MES mes3 = {
-  "WORLD",
+  " WORLD ",
   0,
   0,
   50
@@ -29,9 +34,30 @@ MES mes3 = {
 MES messages[] = {mes1,mes2,mes3};
 
 // Character bitmaps for Minecraft 16pt
+//==============================================================================
 const static unsigned char letters[] PROGMEM= 
 {
-  // @0 'A' (17 pixels wide)
+  // @0 ' ' (17 pixels wide)
+  //                  
+  //                  
+  //                  
+  //                  
+  //                  
+  //                  
+  //                  
+  //                  
+  //                  
+  //                  
+  //                  
+  //                  
+  //                  
+  //                  
+  //                  
+  //                  
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
+
+  // @34 'A' (17 pixels wide)
   //      #######     
   //      #######     
   //      #######     
@@ -51,7 +77,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0x00, 0xF8, 0xF8, 0xF8, 0xFF, 0xE7, 0xE7, 0xE7, 0xE7, 0xE7, 0xFF, 0xF8, 0xF8, 0xF8, 0x00, 0x00, 
   0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 
 
-  // @34 'B' (17 pixels wide)
+  // @68 'B' (17 pixels wide)
   //  ############    
   //  ############    
   //  ############    
@@ -71,7 +97,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x87, 0x87, 0x87, 0x87, 0x87, 0x87, 0xFF, 0xFF, 0x78, 0x78, 0x00, 0x00, 
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xE1, 0xE1, 0xE1, 0xE1, 0xE1, 0xE1, 0xFF, 0xFF, 0x1E, 0x1E, 0x00, 0x00, 
 
-  // @68 'C' (17 pixels wide)
+  // @102 'C' (17 pixels wide)
   //     ###########  
   //     ###########  
   //     ###########  
@@ -91,7 +117,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0xF8, 0xF8, 0xF8, 0xFF, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x3F, 0x3F, 0x38, 0x00, 
   0x00, 0x1F, 0x1F, 0x1F, 0xFF, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xF8, 0xF8, 0x18, 0x00, 
 
-  // @102 'D' (17 pixels wide)
+  // @136 'D' (17 pixels wide)
   //  ############    
   //  ############    
   //  ############    
@@ -111,7 +137,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0xFF, 0xFF, 0xF8, 0xF8, 0x00, 0x00, 
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xFF, 0xFF, 0x1F, 0x1F, 0x00, 0x00, 
 
-  // @136 'E' (17 pixels wide)
+  // @170 'E' (17 pixels wide)
   //  ##############  
   //  ##############  
   //  ##############  
@@ -131,7 +157,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xE7, 0xE7, 0xE7, 0xE7, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0x00, 0x00, 
 
-  // @170 'F' (17 pixels wide)
+  // @204 'F' (17 pixels wide)
   //   #############  
   //   #############  
   //   #############  
@@ -151,7 +177,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xE7, 0xE7, 0xE7, 0xE7, 0xE7, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 
   0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
 
-  // @204 'G' (17 pixels wide)
+  // @238 'G' (17 pixels wide)
   //     ############ 
   //     ############ 
   //     ############ 
@@ -171,7 +197,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0xF8, 0xF8, 0xF8, 0xFF, 0x07, 0x07, 0x07, 0x07, 0x07, 0xE7, 0xE7, 0xE7, 0xE7, 0xE7, 0xE7, 0x00, 
   0x00, 0x1F, 0x1F, 0x1F, 0xFF, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xFF, 0x1F, 0x1F, 0x00, 
 
-  // @238 'H' (17 pixels wide)
+  // @272 'H' (17 pixels wide)
   //  ####      ####  
   //  ####      ####  
   //  ####      ####  
@@ -191,7 +217,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x80, 0x80, 0x80, 0x80, 0x80, 0x80, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 
 
-  // @272 'I' (17 pixels wide)
+  // @306 'I' (17 pixels wide)
   //       #######    
   //       #######    
   //       #######    
@@ -211,7 +237,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0xFF, 0xFF, 0xFF, 0x07, 0x07, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xE0, 0xE0, 0xFF, 0xFF, 0xFF, 0xE0, 0xE0, 0x00, 0x00, 0x00, 0x00, 
 
-  // @306 'J' (17 pixels wide)
+  // @340 'J' (17 pixels wide)
   //           ###    
   //           ###    
   //           ###    
@@ -231,7 +257,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x18, 0x18, 0x18, 0xF8, 0xE0, 0xE0, 0xE0, 0xFF, 0x1F, 0x1F, 0x00, 0x00, 0x00, 0x00, 
 
-  // @340 'K' (17 pixels wide)
+  // @374 'K' (17 pixels wide)
   //   ####           
   //   ####           
   //   ####     ####  
@@ -251,7 +277,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x80, 0x80, 0x80, 0xF0, 0x70, 0x7C, 0x0C, 0x0C, 0x0C, 0x00, 0x00, 
   0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x01, 0x01, 0x0F, 0x0E, 0xFE, 0xF0, 0xF0, 0xF0, 0x00, 0x00, 
 
-  // @374 'L' (17 pixels wide)
+  // @408 'L' (17 pixels wide)
   //   ####           
   //   ####           
   //   ####           
@@ -271,7 +297,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0x00, 0x00, 
 
-  // @408 'M' (17 pixels wide)
+  // @442 'M' (17 pixels wide)
   //  ####      ####  
   //  ####      ####  
   //  ####      ####  
@@ -291,7 +317,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x38, 0xF8, 0xE0, 0xE0, 0xF8, 0x38, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 
 
-  // @442 'N' (17 pixels wide)
+  // @476 'N' (17 pixels wide)
   //  ####      ####  
   //  ####      ####  
   //  ######    ####  
@@ -311,7 +337,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x0C, 0x7C, 0x70, 0x70, 0xF0, 0x80, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x01, 0x01, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 
 
-  // @476 'O' (17 pixels wide)
+  // @510 'O' (17 pixels wide)
   //    ###########   
   //    ###########   
   //    ###########   
@@ -331,7 +357,7 @@ const static unsigned char letters[] PROGMEM=
   0xF8, 0xF8, 0xF8, 0xFF, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0xFF, 0xF8, 0xF8, 0xF8, 
   0x1F, 0x1F, 0x1F, 0xFF, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xFF, 0x1F, 0x1F, 0x1F, 
 
-  // @510 'P' (17 pixels wide)
+  // @544 'P' (17 pixels wide)
   //  ############    
   //  ############    
   //  ############    
@@ -351,7 +377,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0xE7, 0xE7, 0xE7, 0xE7, 0xE7, 0xE7, 0xFF, 0xFF, 0x38, 0x38, 0x00, 0x00, 
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
 
-  // @544 'Q' (17 pixels wide)
+  // @578 'Q' (17 pixels wide)
   //    ###########   
   //    ###########   
   //    ###########   
@@ -371,7 +397,7 @@ const static unsigned char letters[] PROGMEM=
   0xF8, 0xF8, 0xF8, 0xFF, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0x07, 0xFF, 0xF8, 0xF8, 0xF8, 
   0x1F, 0x1F, 0x1F, 0xFF, 0xE0, 0xE0, 0xE0, 0xE0, 0xF0, 0xF0, 0xF0, 0xF0, 0xE0, 0xFF, 0x9F, 0x9F, 0x9F, 
 
-  // @578 'R' (17 pixels wide)
+  // @612 'R' (17 pixels wide)
   // #############    
   // #############    
   // #############    
@@ -391,7 +417,7 @@ const static unsigned char letters[] PROGMEM=
   0xFF, 0xFF, 0xFF, 0xFF, 0xE7, 0xE7, 0xE7, 0xE7, 0xE7, 0xE7, 0xE7, 0xE7, 0xFF, 0x38, 0x38, 0x00, 0x00, 
   0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0x1F, 0x1F, 0x18, 0xF8, 0xE0, 0xE0, 0xE0, 
 
-  // @612 'S' (17 pixels wide)
+  // @646 'S' (17 pixels wide)
   //      ##########  
   //      ##########  
   //      ##########  
@@ -411,7 +437,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0x00, 0x38, 0x38, 0x38, 0xFF, 0xE7, 0xE7, 0xE7, 0xE7, 0xE7, 0xE7, 0x07, 0x07, 0x07, 0x00, 0x00, 
   0x00, 0x00, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xFF, 0x1F, 0x1F, 0x1F, 0x00, 0x00, 
 
-  // @646 'T' (17 pixels wide)
+  // @680 'T' (17 pixels wide)
   //  ##############  
   //  ##############  
   //  ##############  
@@ -431,7 +457,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0x07, 0x07, 0x07, 0x07, 0x07, 0xFF, 0xFF, 0xFF, 0xFF, 0x07, 0x07, 0x07, 0x07, 0x07, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
 
-  // @680 'U' (17 pixels wide)
+  // @714 'U' (17 pixels wide)
   //   ####     ####  
   //   ####     ####  
   //   ####     ####  
@@ -451,7 +477,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 
   0x00, 0x00, 0x1F, 0x1F, 0x1F, 0xFF, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0xFF, 0xFF, 0x1F, 0x1F, 0x00, 0x00, 
 
-  // @714 'V' (17 pixels wide)
+  // @748 'V' (17 pixels wide)
   //  ####      ####  
   //  ####      ####  
   //  ####      ####  
@@ -471,7 +497,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0x7F, 0x7F, 0x7F, 0xFF, 0x80, 0x80, 0x00, 0x00, 0x80, 0x80, 0xFF, 0xFF, 0x7F, 0x7F, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x07, 0x07, 0xFF, 0xF8, 0xF8, 0xFF, 0x07, 0x07, 0x07, 0x00, 0x00, 0x00, 0x00, 
 
-  // @748 'W' (17 pixels wide)
+  // @782 'W' (17 pixels wide)
   //  ####      ####  
   //  ####      ####  
   //  ####      ####  
@@ -491,7 +517,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 
   0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x18, 0x1F, 0x07, 0x07, 0x1F, 0x18, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 
 
-  // @782 'X' (17 pixels wide)
+  // @816 'X' (17 pixels wide)
   //  ####      ####  
   //  ####      ####  
   //  ####      ####  
@@ -511,7 +537,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0x07, 0x07, 0x07, 0x3F, 0x38, 0xF8, 0xE0, 0xE0, 0xF8, 0x38, 0x3F, 0x3F, 0x07, 0x07, 0x00, 0x00, 
   0x00, 0xF8, 0xF8, 0xF8, 0xFF, 0x07, 0x07, 0x00, 0x00, 0x07, 0x07, 0xFF, 0xFF, 0xF8, 0xF8, 0x00, 0x00, 
 
-  // @816 'Y' (17 pixels wide)
+  // @850 'Y' (17 pixels wide)
   //  ####      ####  
   //  ####      ####  
   //  ####      ####  
@@ -531,7 +557,7 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0x07, 0x07, 0x07, 0x3F, 0x38, 0xF8, 0xE0, 0xE0, 0xF8, 0x38, 0x3F, 0x3F, 0x07, 0x07, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
 
-  // @850 'Z' (17 pixels wide)
+  // @884 'Z' (17 pixels wide)
   //  ##############  
   //  ##############  
   //  ##############  
@@ -552,69 +578,65 @@ const static unsigned char letters[] PROGMEM=
   0x00, 0xE0, 0xE0, 0xE0, 0xF8, 0xF8, 0xFF, 0xE7, 0xE7, 0xE7, 0xE0, 0xE0, 0xE0, 0xE0, 0xE0, 0x00, 0x00, 
 };
 
+
 // Character descriptors for Minecraft 16pt
 // { [Char width in bits], [Offset into minecraft_16ptCharBitmaps in bytes] }
 const int minecraft_16ptDescriptors[][2] = 
 {
-  {17, 0},    // A 
-  {17, 34},     // B 
-  {17, 68},     // C 
-  {17, 102},    // D 
-  {17, 136},    // E 
-  {17, 170},    // F 
-  {17, 204},    // G 
-  {17, 238},    // H 
-  {17, 272},    // I 
-  {17, 306},    // J 
-  {17, 340},    // K 
-  {17, 374},    // L 
-  {17, 408},    // M 
-  {17, 442},    // N 
-  {17, 476},    // O 
-  {17, 510},    // P 
-  {17, 544},    // Q 
-  {17, 578},    // R 
-  {17, 612},    // S 
-  {17, 646},    // T 
-  {17, 680},    // U 
-  {17, 714},    // V 
-  {17, 748},    // W 
-  {17, 782},    // X 
-  {17, 816},    // Y 
-  {17, 850},    // Z 
+  {17, 0},      //   
+  {17, 34},     // A 
+  {17, 68},     // B 
+  {17, 102},    // C 
+  {17, 136},    // D 
+  {17, 170},    // E 
+  {17, 204},    // F 
+  {17, 238},    // G 
+  {17, 272},    // H 
+  {17, 306},    // I 
+  {17, 340},    // J 
+  {17, 374},    // K 
+  {17, 408},    // L 
+  {17, 442},    // M 
+  {17, 476},    // N 
+  {17, 510},    // O 
+  {17, 544},    // P 
+  {17, 578},    // Q 
+  {17, 612},    // R 
+  {17, 646},    // S 
+  {17, 680},    // T 
+  {17, 714},    // U 
+  {17, 748},    // V 
+  {17, 782},    // W 
+  {17, 816},    // X 
+  {17, 850},    // Y 
+  {17, 884},    // Z 
+
 };
 
 //Functions for operating the LED string
-//==============================================================================
-
-////////////////////////////////////////////////////////////////////////////////
-/*
- This is an example of how simple driving a Neopixel can be
- This code is optimized for understandability and changability rather than raw speed
- More info at http://wp.josh.com/2014/05/11/ws2812-neopixels-made-easy/
-*/
 void sendBit( bool bitVal ) {     
       
     asm volatile (
-      "cpi %[bitVal_asm],1 \n\t"
+      "cpi %[bitVal_asm],1 \n\t"       // Conditional branch if bitVal is equal to 1
       "breq if \n\t"
-      "sbi %[port], %[bit] \n\t"        // Set the output bit
+                                       // Send a bit value of 0
+      "sbi %[port], %[bit] \n\t"       // Set the output bit
       ".rept %[onCycles0] \n\t"        // Now timing actually matters. The 0-bit must be long enough to be detected but not too long or it will be a 1-bit
-      "nop \n\t"                                              // Execute NOPs to delay exactly the specified number of cycles
+      "nop \n\t"                       // Execute NOPs to delay exactly the specified number of cycles
       ".endr \n\t"
-      "cbi %[port], %[bit] \n\t"                              // Clear the output bit
-      ".rept %[offCycles0] \n\t"                               // Execute NOPs to delay exactly the specified number of cycles
+      "cbi %[port], %[bit] \n\t"       // Clear the output bit
+      ".rept %[offCycles0] \n\t"       // Execute NOPs to delay exactly the specified number of cycles
       "nop \n\t"
       ".endr \n\t"
       "rjmp else \n\t"
-
+                                       // Send a bit value of 1
       "if: \n\t"
-      "sbi %[port], %[bit] \n\t"        // Set the output bit
-      ".rept %[onCycles1] \n\t"                                // Execute NOPs to delay exactly the specified number of cycles
+      "sbi %[port], %[bit] \n\t"       // Set the output bit
+      ".rept %[onCycles1] \n\t"        // Execute NOPs to delay exactly the specified number of cycles
       "nop \n\t"
       ".endr \n\t"
-      "cbi %[port], %[bit] \n\t"                              // Clear the output bit
-      ".rept %[offCycles1] \n\t"                               // Execute NOPs to delay exactly the specified number of cycles
+      "cbi %[port], %[bit] \n\t"       // Clear the output bit
+      ".rept %[offCycles1] \n\t"       // Execute NOPs to delay exactly the specified number of cycles
       "nop \n\t"
       ".endr \n\t"
       "else: \n\t"
@@ -623,7 +645,7 @@ void sendBit( bool bitVal ) {
       [bit]   "I" (PIXEL_BIT),
       [onCycles0]  "I" (NS_TO_CYCLES(T0H) - 2),
       [offCycles0] "I" (NS_TO_CYCLES(T0L) - 2),
-      [onCycles1]  "I" (NS_TO_CYCLES(T1H) - 2),    // 1-bit width less overhead  for the actual bit setting, note that this delay could be longer and everything would still work
+      [onCycles1]  "I" (NS_TO_CYCLES(T1H) - 2),
       [offCycles1]   "I" (NS_TO_CYCLES(T1L) - 2),
       [bitVal_asm] "a" (bitVal)
       );
@@ -668,8 +690,10 @@ void show() {
 MES mes_to_dis;
 
 int translate(char c) {
+  // Turns the characters in message string into indexes
+  // into the charcter array bitmap
   if (c != ' ') {
-    return c - 'A';
+    return (c - 'A')+1;
   }
   else {
     return 0;
@@ -680,6 +704,7 @@ void update_display(unsigned char r, unsigned char g, unsigned char b, uint16_t 
    cli();
 
     for( uint16_t bit = 0 ; bit < 16; bit++ ) {
+    // Takes the slice of the charcter and sends it to the LED display
       
       bitRead( slice , 15) ? sendPixel(r,g,b) : sendPixel(0,0,0);                
       slice <<= 1;
@@ -687,9 +712,10 @@ void update_display(unsigned char r, unsigned char g, unsigned char b, uint16_t 
     }
     sei();
     show();
+    _delay_us(FRAME_DELAY);
 }
 
-void dis_letter ( unsigned char r, unsigned char g, unsigned char b,int frequency,char message) {
+void dis_letter ( unsigned char r, unsigned char g, unsigned char b,char message) {
   
   int index = translate(message);
   int width = 17;
@@ -698,17 +724,18 @@ void dis_letter ( unsigned char r, unsigned char g, unsigned char b,int frequenc
   uint16_t value;
 
   for (x=0;x<width;x++){
+    //Parses breaks up charaters into slices to be displayed
     value = (pgm_read_byte_near(letters+i+x+width) << 8) | pgm_read_byte_near(letters+i+x);
     update_display(r,g,b,value);
-    delay(frequency*1000);
   } 
 }
 
-void parse(MES message, int framerate) {
+void parse(MES message) {
   int mes_len = message.message.length();
   
   for (int k=0; k<mes_len; k++){
-     dis_letter(message.r,message.g,message.b,framerate,message.message[k]);
+  //Breaks up Messages into individual characters
+     dis_letter(message.r,message.g,message.b,message.message[k]);
   }
 }
 //Functions for button control
@@ -726,20 +753,20 @@ boolean ignoreUp = false; // whether to ignore the button release because the cl
 
 void shutoff() {
   asm volatile(
-    "ldi r16,(1<<%[ASM_INT0]) \n\t"
-    "out %[ASM_GIMSK], r16 \n\t"
-    "ldi r16,(1<<%[ASM_SE])|(1<<%[ASM_SM1])|(0<<%[ASM_SM0])|(0<<%[ASM_ISC01])|(0<<%[ASM_ISC00]) \n\t"
+    "ldi r16,(1<<%[ASM_INT0]) \n\t"  // Turn on Button interrupt
+    "out %[ASM_GIMSK], r16 \n\t"     
+    "ldi r16,(1<<%[ASM_SE])|(1<<%[ASM_SM1])|(0<<%[ASM_SM0])|(0<<%[ASM_ISC01])|(0<<%[ASM_ISC00]) \n\t"  //Set sleep mode to powerdown
     "out %[ASM_MCUCR], r16 \n\t"
-    "ldi r16, (0<<%[ASM_ADEN]) \n\t"
-    "out %[ASM_ADCSRA], r16 \n\t"
+    "ldi r16, (0<<%[ASM_ADEN]) \n\t"  // Turn off ADC
+    "out %[ASM_ADCSRA], r16 \n\t" 
     "sei\n\t"
-    "sleep\n\t"
+    "sleep\n\t"  // Sleep
     "cli\n\t"
-    "ldi r16,(0<<%[ASM_INT0]) \n\t"
+    "ldi r16,(0<<%[ASM_INT0]) \n\t"   // Turn off Button interrupt
     "out %[ASM_GIMSK], r16 \n\t"
-    "ldi r16,(0<<%[ASM_SE]) \n\t"
+    "ldi r16,(0<<%[ASM_SE]) \n\t"     // Turn off sleep enable
     "out %[ASM_MCUCR], r16 \n\t"
-    "ldi r16, (1<<%[ASM_ADEN]) \n\t"
+    "ldi r16, (1<<%[ASM_ADEN]) \n\t"  // Turn on ADC
     "out %[ASM_ADCSRA], r16 \n\t"
     "sei\n\t"
     ::
@@ -796,6 +823,7 @@ void button_press(){
 }
 
 int count = 0;
+
 void event1()
 {
   count = ((count+1)%3);
@@ -804,6 +832,7 @@ void event1()
 
 void event2()
 {
+  //Shut off display and go to sleep
   update_display(0,0,0,0x00);
   delay(1000);
   shutoff();
@@ -825,7 +854,7 @@ void loop() {
 
   button_press();
 
-  parse(mes_to_dis,FRAMERATE);
+  parse(mes_to_dis);
   
 }
 
